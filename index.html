@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>R.E.M.I.E.L.L.E</title>
+  <style>
+    body{margin:0;font-family:sans-serif;background:#102418;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh}
+    .chat{width:92%;max-width:480px;height:80vh;background:#183624;border:1px solid #2e6b46;border-radius:8px;display:flex;flex-direction:column}
+    header{padding:10px;text-align:center;background:#12291b;border-bottom:1px solid #2e6b46}
+    header h1{margin:0;color:#4ade80;font-size:18px}
+    header p{margin:3px 0 0;font-size:10px;color:#a7f3d0}
+    #mensajes{flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+    .msg{padding:8px 12px;border-radius:6px;max-width:82%;font-size:13px;line-height:1.4}
+    .ia{background:#214a32;align-self:flex-start;border-left:3px solid #4ade80}
+    .user{background:#15803d;align-self:flex-end}
+    .barra{display:flex;padding:8px;gap:5px;background:#12291b}
+    input{flex:1;padding:8px;border:1px solid #2e6b46;border-radius:4px;background:#183624;color:#fff;outline:none}
+    button{padding:8px 10px;border:none;border-radius:4px;cursor:pointer;font-weight:bold}
+    .enviar{background:#4ade80;color:#062411}
+    .limpiar{background:#374151;color:#fff}
+  </style>
+</head>
+<body>
+  <div class="chat">
+    <header>
+      <h1>R.E.M.I.E.L.L.E</h1>
+      <p>Red Ecológica de Monitoreo Inteligente y Estrategias Limpias para Lograr Equilibrio</p>
+    </header>
+    <div id="mensajes">
+      <div class="msg ia">Hola, soy R.E.M.I.E.L.L.E. Pregúntame sobre causas o soluciones de aire, agua, suelo o reciclaje.</div>
+    </div>
+    <div class="barra">
+      <input type="text" id="texto" placeholder="Ej: ¿Por qué el aire está contaminado?" onkeypress="if(event.key==='Enter')enviar()">
+      <button class="enviar" onclick="enviar()">Enviar</button>
+      <button class="limpiar" onclick="limpiar()">Limpiar</button>
+    </div>
+  </div>
+  <script>
+    const c=document.getElementById('mensajes'),i=document.getElementById('texto');
+    const kb=[
+      {k:['aire','atmosfera','humo','smog','co2'],c:'El aire se contamina por quema de combustibles fósiles (autos, fábricas) y gases tóxicos como CO₂.',s:'Usa transporte público o bicicleta, planta árboles y evita quemar basura.'},
+      {k:['agua','rio','mar','oceano'],c:'El agua se contamina por aguas residuales sin tratar, químicos industriales y plásticos.',s:'No arrojes aceite al desagüe, limpia playas y reduce el plástico.'},
+      {k:['suelo','tierra','basura','plastico'],c:'El suelo se contamina por acumulación de basura no biodegradable y químicos agrícolas.',s:'Aplica las 3R (Reduce, Reutiliza, Recicla) y deposita pilas en puntos especiales.'},
+      {k:['nombre','significa','remielle','eres'],g:'Soy R.E.M.I.E.L.L.E: Red Ecológica de Monitoreo Inteligente y Estrategias Limpias para Lograr Equilibrio.'},
+      {k:['hola','buenos','buenas','saludos'],g:'¡Hola! ¿Qué duda ambiental tienes hoy? Pregúntame causas o soluciones.'}
+    ];
+    function agregar(t,tp){c.innerHTML+=`<div class="msg ${tp}">${t}</div>`;c.scrollTop=c.scrollHeight;}
+    function responder(p){
+      let txt=p.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      let ec=/por que|porque|causa|motivo|razon|explica/.test(txt);
+      let es=/como|evitar|solucion|ayudar|reducir|hacer/.test(txt);
+      let t=kb.find(x=>x.k.some(kw=>txt.includes(kw)));
+      if(!t)return'No tengo datos sobre eso aún, pregúntame por el <b>aire</b>, <b>agua</b> o <b>suelo</b>.';
+      if(t.g)return t.g;
+      if(ec)return t.c;
+      if(es)return t.s;
+      return `<b>Causas:</b> ${t.c}<br><br><b>Solución:</b> ${t.s}`;
+    }
+    function enviar(){
+      let v=i.value.trim();if(!v)return;
+      agregar(v,'user');i.value='';
+      setTimeout(()=>agregar(responder(v),'ia'),300);
+    }
+    function limpiar(){c.innerHTML='<div class="msg ia">Chat limpio. ¿Qué deseas consultar?</div>';}
+  </script>
+</body>
+</html>
